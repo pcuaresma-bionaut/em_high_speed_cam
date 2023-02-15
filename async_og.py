@@ -49,7 +49,6 @@ def print_preamble():
     print('/// Vimba API Asynchronous Grab with OpenCV Example ///')
     print('///////////////////////////////////////////////////////\n')
 
-
 def print_usage():
     print('Usage:')
     print('    python asynchronous_grab_opencv.py [camera_id]')
@@ -59,7 +58,6 @@ def print_usage():
     print('    camera_id   ID of the camera to use (using first camera if not specified)')
     print()
 
-
 def abort(reason: str, return_code: int = 1, usage: bool = False):
     print(reason + '\n')
 
@@ -67,7 +65,6 @@ def abort(reason: str, return_code: int = 1, usage: bool = False):
         print_usage()
 
     sys.exit(return_code)
-
 
 def parse_args() -> Optional[str]:
     args = sys.argv[1:]
@@ -100,7 +97,6 @@ def get_camera(camera_id: Optional[str]) -> Camera:
                 abort('No Cameras accessible. Abort.')
 
             return cams[0]
-
 
 def setup_camera(cam: Camera):
     with cam:
