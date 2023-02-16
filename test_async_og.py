@@ -4,7 +4,7 @@ import subprocess as sp
 from multiprocessing import Process
 
 CAM_ID = "DEV_1AB228000FA4"
-IS_CAM_CONNECTED = False
+IS_CAM_CONNECTED = True
 
 class TestAsyncOGWithCameraConnected:
     @pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
@@ -17,18 +17,25 @@ class TestAsyncOGWithCameraConnected:
         cam = get_camera(CAM_ID)
         assert cam.get_id() == CAM_ID
 
+    @pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
+    def test_given_unexpected_camera_id_get_camera_prints_expected_abort_message_to_stdout(self):
+        self.command_for_running_get_camera_with_wrong_camera_id = "python3 -c 'import async_og; async_og.get_camera(\"wrong_cam_id\")'"
+        self.subprocess_get_camera = sp.Popen(self.command_for_running_get_camera_with_wrong_camera_id, shell=True, stdout=sp.PIPE, text=True)
+        first_line_without_newline = str(self.subprocess_get_camera.stdout.readline()[:-1])
+        assert first_line_without_newline == "Failed to access Camera \'wrong_cam_id\'. Abort."
+
 
 class TestAsyncOGNoCameraConnected:
     def setup_class(self):
-        self.command_for_running_get_camera = "python3 -c 'import async_og; async_og.get_camera(None)'"
-        self.subprocess_get_camera = sp.Popen(self.command_for_running_get_camera, shell=True, stdout=sp.PIPE, text=True)
+        self.command_for_running_get_camera_with_none = "python3 -c 'import async_og; async_og.get_camera(None)'"
+        self.subprocess_get_camera = sp.Popen(self.command_for_running_get_camera_with_none, shell=True, stdout=sp.PIPE, text=True)
     
     @pytest.mark.skipif(IS_CAM_CONNECTED == True, reason="This test relies on the camera not being connected.")
     def test_get_camera_prints_to_stdout_given_none(self):
         assert self.subprocess_get_camera.stdout != ""
 
     @pytest.mark.skipif(IS_CAM_CONNECTED == True, reason="This test relies on the camera not being connected.")
-    def test_get_camera_prints_expected_error_msg_to_stdout_given_none(self):
+    def test_get_camera_prints_expected_abort_msg_to_stdout_given_none(self):
         first_line_without_newline = str(self.subprocess_get_camera.stdout.readline()[:-1])
         assert first_line_without_newline == "No Cameras accessible. Abort."
 
