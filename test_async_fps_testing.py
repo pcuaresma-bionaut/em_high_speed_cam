@@ -87,7 +87,18 @@ class TestInitCamMaxFPS:
 
     def test_exposure_time_printed_to_stdout(self):
         pass
+    
+    def test_trigger_mode_attribute_set_to_expected_value(self):
+        with self.vimba:
+            with self.camera:
+                trigger_mode = self.camera.TriggerMode.get()
+                # trigger_mode = self.camera.get_feature_by_name("TriggerMode").get()
+                assert str(trigger_mode) == "Off"
 
+    def test_trigger_mode_printed_to_stdout(self):
+        pass
+
+    
     
         """
         test given valid camera object, its:
