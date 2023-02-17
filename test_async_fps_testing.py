@@ -53,10 +53,14 @@ class TestMain:
 
         [print(feature, "\n") for feature in self.camera.get_all_features()]
     """
+
 class TestInitCamMaxFPS:
     def setup_class(self):
         self.vimba = Vimba.get_instance()
         self.camera = get_camera(None)
+        with self.vimba:
+            with self.camera:
+                init_cam_max_fps(self.camera)
                 
     def test_default_user_set_is_expected_value(self):
         with self.vimba:
@@ -73,15 +77,10 @@ class TestInitCamMaxFPS:
 
     def test_exposure_mode_printed_to_stdout(self):
         pass
-
+    
+    
         """
         test given valid camera object, its:
-            ExposureTime attribute is set to 500
-            ExposureTime printed to stdout
-
-            TriggerMode attribute is set to "Off"
-            TriggerMode printed to stdout
-
             AcquisitionFrameRateMode attribute is set to "Basic"
             AcquisitionFrameRateMode printed to stdout
 
