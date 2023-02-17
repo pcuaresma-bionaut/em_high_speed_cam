@@ -107,7 +107,7 @@ class TestInitCamMaxFPS:
     def test_acquisition_frame_rate_mode_printed_to_stdout(self):
         pass
     
-    def test_acquisition_mode_set_to_expected_value(self):
+    def test_acquisition_mode_attribute_set_to_expected_value(self):
         with self.vimba:
             with self.camera:
                 acquisition_mode = self.camera.AcquisitionMode.get()
@@ -116,7 +116,7 @@ class TestInitCamMaxFPS:
     def test_acquisition_mode_printed_to_stdout(self):
         pass
 
-    def test_acquisition_frame_rate_set_to_expected_value(self):
+    def test_acquisition_frame_rate_attribute_set_to_expected_value(self):
         with self.vimba:
             with self.camera:
                 acquisition_frame_rate = self.camera.AcquisitionFrameRate.get()
@@ -124,6 +124,9 @@ class TestInitCamMaxFPS:
     
     def test_acquisition_frame_rate_printed_to_stdout(self):
         pass
+
+    
+    
 
         """
         test given valid camera object, its:
