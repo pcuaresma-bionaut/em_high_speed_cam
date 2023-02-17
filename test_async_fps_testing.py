@@ -51,17 +51,21 @@ class TestMain:
             AcquisitionStatus printed to stdout
             AcquisitionStatusSelector printed to stdout
 
+        [print(feature, "\n") for feature in self.camera.get_all_features()]
     """
 class TestInitCamMaxFPS:
     def setup_class(self):
+        self.vimba = Vimba.get_instance()
         self.camera = get_camera(None)
-        init_cam_max_fps(self.camera)
-    
-    
+                
+    def test_default_user_set_is_expected_value(self):
+        with self.vimba:
+            with self.camera:
+                user_set_default = self.camera.get_feature_by_name('UserSetDefault').get()
+                assert str(user_set_default) == "UserSet1"
 
-"""
+        """
         test given valid camera object, its:
-            UserSetDefault attribute is set to "UserSet1"
             
             ExposureMode attribute is set to "Timed"
             ExposureMode printed to stdout
