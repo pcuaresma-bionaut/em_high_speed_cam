@@ -98,7 +98,15 @@ class TestInitCamMaxFPS:
     def test_trigger_mode_printed_to_stdout(self):
         pass
 
+    def test_acquisition_frame_rate_mode_set_to_expected_value(self):
+        with self.vimba:
+            with self.camera:
+                acquisition_frame_rate_mode = self.camera.AcquisitionFrameRateMode.get()
+                assert str(acquisition_frame_rate_mode) == "Basic"
+
     
+    def test_acquisition_frame_rate_mode_printed_to_stdou(self):
+        pass
     
         """
         test given valid camera object, its:
