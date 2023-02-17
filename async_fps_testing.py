@@ -79,7 +79,7 @@ def images_to_video(images, video_file):
     # make all image size is same
     img_array = []
     for i in images:
-        img = cv2.imread(i)
+        img = cv2.imread(i) # input: image path
         if img is None:
             continue
         img_array.append(img)
@@ -294,6 +294,7 @@ def main():
             handler = Handler()
             try:
                  startTs = datetime.now()
+                 print("datetime", startTs)
                  threading.Thread(target=process, args=[cam, handler]).start()
                  while True:
                     time.sleep(1)
