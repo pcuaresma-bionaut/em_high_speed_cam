@@ -4,7 +4,7 @@ import subprocess as sp
 from multiprocessing import Process
 
 CAM_ID = "DEV_1AB228000FA4"
-IS_CAM_CONNECTED = True
+IS_CAM_CONNECTED = False
 
 class TestAsyncOGWithCameraConnected:
     @pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
