@@ -103,19 +103,30 @@ class TestInitCamMaxFPS:
             with self.camera:
                 acquisition_frame_rate_mode = self.camera.AcquisitionFrameRateMode.get()
                 assert str(acquisition_frame_rate_mode) == "Basic"
-
     
     def test_acquisition_frame_rate_mode_printed_to_stdout(self):
         pass
     
+    def test_acquisition_mode_set_to_expected_value(self):
+        with self.vimba:
+            with self.camera:
+                acquisition_mode = self.camera.AcquisitionMode.get()
+                assert str(acquisition_mode) == "Continuous"
+    
+    def test_acquisition_mode_printed_to_stdout(self):
+        pass
+
+    def test_acquisition_frame_rate_set_to_expected_value(self):
+        with self.vimba:
+            with self.camera:
+                acquisition_frame_rate = self.camera.AcquisitionFrameRate.get()
+                assert pytest.approx(acquisition_frame_rate, 1e-6) == 500.
+    
+    def test_acquisition_frame_rate_printed_to_stdout(self):
+        pass
+
         """
         test given valid camera object, its:
-            AcquisitionMode attribute is set to "Continuous"
-            AcquisitionMode printed to stdout
-
-            AcquisitionFrameRate attribute is set to 500
-            AcquisitionFrameRate printed to stdout
-
             TriggerSelector attribute is set to "AcquisitionStart"
             TriggerSelector printed to stdout
 
