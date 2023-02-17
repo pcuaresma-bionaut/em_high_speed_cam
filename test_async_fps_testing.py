@@ -63,13 +63,19 @@ class TestInitCamMaxFPS:
             with self.camera:
                 user_set_default = self.camera.get_feature_by_name('UserSetDefault').get()
                 assert str(user_set_default) == "UserSet1"
+    
+    def test_exposure_mode_attribute_set_to_expected_value(self):
+        with self.vimba:
+            with self.camera:
+                exposure_mode = self.camera.ExposureMode.get()
+                # exposure_mode = self.camera.get_feature_by_name("ExposureMode").get()
+                assert str(exposure_mode) == "Timed"
+
+    def test_exposure_mode_printed_to_stdout(self):
+        pass
 
         """
         test given valid camera object, its:
-            
-            ExposureMode attribute is set to "Timed"
-            ExposureMode printed to stdout
-
             ExposureTime attribute is set to 500
             ExposureTime printed to stdout
 
