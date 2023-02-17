@@ -105,14 +105,11 @@ class TestInitCamMaxFPS:
                 assert str(acquisition_frame_rate_mode) == "Basic"
 
     
-    def test_acquisition_frame_rate_mode_printed_to_stdou(self):
+    def test_acquisition_frame_rate_mode_printed_to_stdout(self):
         pass
     
         """
         test given valid camera object, its:
-            AcquisitionFrameRateMode attribute is set to "Basic"
-            AcquisitionFrameRateMode printed to stdout
-
             AcquisitionMode attribute is set to "Continuous"
             AcquisitionMode printed to stdout
 
