@@ -1,10 +1,57 @@
 import pytest
-from async_og import *
+from async_fps_testing import *
 import subprocess as sp
 from multiprocessing import Process
 
 CAM_ID = "DEV_1AB228000FA4"
 IS_CAM_CONNECTED = False
+
+class TestMain:
+    """
+    test preamble is printed
+    test cam_id gets set
+    test cam_id gets set to expected value from parse_args
+    test parse args?
+    test init_cam_max_fps
+        test given valid camera object, its:
+            UserSetDefault attribute is set to "UserSet1"
+            
+            ExposureMode attribute is set to "Timed"
+            ExposureMode printed to stdout
+
+            ExposureTime attribute is set to 500
+            ExposureTime printed to stdout
+
+            TriggerMode attribute is set to "Off"
+            TriggerMode printed to stdout
+
+            AcquisitionFrameRateMode attribute is set to "Basic"
+            AcquisitionFrameRateMode printed to stdout
+
+            AcquisitionMode attribute is set to "Continuous"
+            AcquisitionMode printed to stdout
+
+            AcquisitionFrameRate attribute is set to 500
+            AcquisitionFrameRate printed to stdout
+
+            TriggerSelector attribute is set to "AcquisitionStart"
+            TriggerSelector printed to stdout
+
+            TriggerMode attribute is set to "On"
+            TriggerMode printed to stdout
+
+            TriggerSource attribute is set to "Software"
+            TriggerSource printed to stdout
+
+            TriggerActivation attribute is set to "AnyEdge"
+            TriggerActivation printed to stdout
+
+            AcquisitionStart --?
+
+            AcquisitionStatus printed to stdout
+            AcquisitionStatusSelector printed to stdout
+
+    """
 
 class TestAsyncOGWithCameraConnected:
     @pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
