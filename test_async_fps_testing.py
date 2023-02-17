@@ -78,6 +78,16 @@ class TestInitCamMaxFPS:
     def test_exposure_mode_printed_to_stdout(self):
         pass
     
+    def test_exposure_time_attribute_set_to_expected_value(self):
+        with self.vimba:
+            with self.camera:
+                exposure_time = self.camera.ExposureTime.get()
+                # exposure_time = self.camera.get_feature_by_name("ExposureTime").get()
+                assert pytest.approx(exposure_time, 1e-4) == 500.
+
+    def test_exposure_time_printed_to_stdout(self):
+        pass
+
     
         """
         test given valid camera object, its:
