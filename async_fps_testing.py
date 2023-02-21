@@ -116,7 +116,6 @@ def abort(reason: str, return_code: int = 1, usage: bool = False):
 
     sys.exit(return_code)
 
-
 def parse_args() -> Optional[str]:
     args = sys.argv[1:]
     argc = len(args)

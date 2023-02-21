@@ -1,7 +1,11 @@
 import pytest
-from async_fps_testing import *
 import subprocess as sp
 from multiprocessing import Process
+
+import sys
+sys.path.append("../em_high_speed_cam")
+print(sys.path)
+from async_fps_testing import *
 
 CAM_ID = "DEV_1AB228000FA4"
 IS_CAM_CONNECTED = True
