@@ -133,8 +133,6 @@ class TestInitCamMaxFPS:
     
     def test_acquisition_frame_rate_printed_to_stdout(self):
         pass
-
-    
     
 
         """
@@ -155,6 +153,7 @@ class TestInitCamMaxFPS:
 
             AcquisitionStatus printed to stdout
             AcquisitionStatusSelector printed to stdout"""
+            
 
 @pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
 class TestAsyncOGWithCameraConnected:
