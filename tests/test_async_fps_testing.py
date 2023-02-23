@@ -62,7 +62,7 @@ class TestMain:
 
         [print(feature, "\n") for feature in self.camera.get_all_features()]
     """
-@pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
+@pytest.mark.skipif(IS_CAM_CONNECTED != False, reason="This test relies on the camera being connected.")
 class TestInitCamMaxFPS:
     def setup_class(self):
         self.vimba = Vimba.get_instance()
@@ -162,7 +162,7 @@ def assert_stdout_matches_expected_output_for_command(command, expected_output):
 
             
 
-@pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
+@pytest.mark.skipif(IS_CAM_CONNECTED == False, reason="This test relies on the camera being connected.")
 class TestAsyncOGWithCameraConnected:
     def test_given_none_as_input_get_camera_returns_a_camera(self):
         cam = get_camera(None)
