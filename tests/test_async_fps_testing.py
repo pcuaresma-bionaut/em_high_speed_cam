@@ -190,14 +190,6 @@ class TestAsyncOGNoCameraConnected:
         expected_output = "No Cameras accessible. Abort."
         assert_stdout_matches_expected_output_for_command(self.command, expected_output)
 
-    
-    def test_get_camera_prints_to_stdout_given_none(self):
-        assert self.subprocess_get_camera.stdout != ""
-
-    def test_get_camera_prints_expected_abort_msg_to_stdout_given_none(self):
-        first_line_without_newline = str(self.subprocess_get_camera.stdout.readline()[:-1])
-        assert first_line_without_newline == "No Cameras accessible. Abort."
-
     def test_get_camera_exits_with_code_1_given_none(self):
         self.subprocess_get_camera.communicate()
         assert self.subprocess_get_camera.returncode == 1
