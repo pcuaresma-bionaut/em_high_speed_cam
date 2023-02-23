@@ -62,7 +62,7 @@ class TestMain:
 
         [print(feature, "\n") for feature in self.camera.get_all_features()]
     """
-@pytest.mark.skipif(IS_CAM_CONNECTED != False, reason="This test relies on the camera being connected.")
+@pytest.mark.skipif(IS_CAM_CONNECTED == False, reason="This test relies on the camera being connected.")
 class TestInitCamMaxFPS:
     def setup_class(self):
         self.vimba = Vimba.get_instance()
