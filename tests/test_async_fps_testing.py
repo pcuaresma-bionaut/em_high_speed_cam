@@ -171,12 +171,6 @@ class TestAsyncOGWithCameraConnected:
     def test_given_camera_id_get_camera_returns_camera_with_expected_id(self):
         cam = get_camera(CAM_ID)
         assert cam.get_id() == CAM_ID
-
-    # def test_given_unexpected_camera_id_get_camera_prints_expected_abort_message_to_stdout(self):
-    #     self.command_for_running_get_camera_with_wrong_camera_id = "python3 -c 'import async_og; async_og.get_camera(\"wrong_cam_id\")'"
-    #     self.subprocess_get_camera = subprocess.Popen(self.command_for_running_get_camera_with_wrong_camera_id, shell=True, stdout=subprocess.PIPE, text=True)
-    #     first_line_without_newline = str(self.subprocess_get_camera.stdout.readline()[:-1])
-    #     assert first_line_without_newline == "Failed to access Camera \'wrong_cam_id\'. Abort."
     
     def test_given_unexpected_camera_id_get_camera_prints_expected_abort_message_to_stdout(self):
         command = "python3 -c 'import async_og; async_og.get_camera(\"wrong_cam_id\")'"
