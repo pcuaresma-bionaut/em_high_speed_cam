@@ -1,5 +1,5 @@
 import pytest
-import subprocess as sp
+import subprocess
 from multiprocessing import Process
 
 import sys
@@ -153,6 +153,13 @@ class TestInitCamMaxFPS:
 
             AcquisitionStatus printed to stdout
             AcquisitionStatusSelector printed to stdout"""
+
+
+def assert_stdout_matches_expected_output_for_command(command, expected_output):
+    command_subprocess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, text=True)
+    first_line_without_newline = str(command_subprocess.stdout.readline()[:-1])
+    assert first_line_without_newline == expected_output
+
             
 
 @pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
@@ -167,16 +174,21 @@ class TestAsyncOGWithCameraConnected:
 
     def test_given_unexpected_camera_id_get_camera_prints_expected_abort_message_to_stdout(self):
         self.command_for_running_get_camera_with_wrong_camera_id = "python3 -c 'import async_og; async_og.get_camera(\"wrong_cam_id\")'"
-        self.subprocess_get_camera = sp.Popen(self.command_for_running_get_camera_with_wrong_camera_id, shell=True, stdout=sp.PIPE, text=True)
+        self.subprocess_get_camera = subprocess.Popen(self.command_for_running_get_camera_with_wrong_camera_id, shell=True, stdout=subprocess.PIPE, text=True)
         first_line_without_newline = str(self.subprocess_get_camera.stdout.readline()[:-1])
         assert first_line_without_newline == "Failed to access Camera \'wrong_cam_id\'. Abort."
+    
+    def test_given_unexpected_camera_id_get_camera_prints_expected_abort_message_to_stdout_new_impl(self):
+        command = "python3 -c 'import async_og; async_og.get_camera(\"wrong_cam_id\")'"
+        expected_output = "Failed to access Camera \'wrong_cam_id\'. Abort."
+        assert_stdout_matches_expected_output_for_command(command, expected_output)
 
 
 @pytest.mark.skipif(IS_CAM_CONNECTED == True, reason="This test relies on the camera not being connected.")
 class TestAsyncOGNoCameraConnected:
     def setup_class(self):
         self.command_for_running_get_camera_with_none = "python3 -c 'import async_og; async_og.get_camera(None)'"
-        self.subprocess_get_camera = sp.Popen(self.command_for_running_get_camera_with_none, shell=True, stdout=sp.PIPE, text=True)
+        self.subprocess_get_camera = subprocess.Popen(self.command_for_running_get_camera_with_none, shell=True, stdout=subprocess.PIPE, text=True)
     
     def test_get_camera_prints_to_stdout_given_none(self):
         assert self.subprocess_get_camera.stdout != ""
