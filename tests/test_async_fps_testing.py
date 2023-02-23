@@ -8,7 +8,7 @@ print(sys.path)
 from async_fps_testing import *
 
 CAM_ID = "DEV_1AB228000FA4"
-IS_CAM_CONNECTED = True
+IS_CAM_CONNECTED = False
 
 """
 TODO:
@@ -62,7 +62,7 @@ class TestMain:
 
         [print(feature, "\n") for feature in self.camera.get_all_features()]
     """
-
+@pytest.mark.skipif(IS_CAM_CONNECTED != True, reason="This test relies on the camera being connected.")
 class TestInitCamMaxFPS:
     def setup_class(self):
         self.vimba = Vimba.get_instance()
@@ -183,6 +183,13 @@ class TestAsyncOGNoCameraConnected:
     def setup_class(self):
         self.command_for_running_get_camera_with_none = "python3 -c 'import async_og; async_og.get_camera(None)'"
         self.subprocess_get_camera = subprocess.Popen(self.command_for_running_get_camera_with_none, shell=True, stdout=subprocess.PIPE, text=True)
+
+        self.command = "python3 -c 'import async_og; async_og.get_camera(None)'"
+
+    def test_get_camera_prints_expected_abort_msg_to_stdout_given_none(self):
+        expected_output = "No Cameras accessible. Abort."
+        assert_stdout_matches_expected_output_for_command(self.command, expected_output)
+
     
     def test_get_camera_prints_to_stdout_given_none(self):
         assert self.subprocess_get_camera.stdout != ""
