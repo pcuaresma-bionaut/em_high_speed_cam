@@ -8,7 +8,7 @@ print(sys.path)
 from async_fps_testing import *
 
 CAM_ID = "DEV_1AB228000FA4"
-IS_CAM_CONNECTED = False
+IS_CAM_CONNECTED = True
 
 """
 TODO:
