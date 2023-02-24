@@ -56,7 +56,7 @@ def main():
                 average_time_in_seconds = total_time_in_seconds / len(frame_times_in_seconds)
                 print(f"Average time (s): {average_time_in_seconds}")
 
-                print(f"Frequency (1/AverageTime): {1/average_time_in_seconds}")
+                print(f"Frequency (1 / AverageTime): {1/average_time_in_seconds}")
             finally:
                 cam.stop_streaming()
             
