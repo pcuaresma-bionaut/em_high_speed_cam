@@ -1,6 +1,7 @@
 from vimba import *
 import threading
 import cv2
+import os
 from datetime import datetime
 
 class Handler:
@@ -29,7 +30,13 @@ class Handler:
             print('{} acquired {}'.format(cam, frame), flush=True)
 
             msg = 'Stream from \'{}\'. Press <Enter> to stop stream.'
-            cv2.imshow(msg.format(cam.get_name()), frame.as_opencv_image())
+
+            frame_image = frame.as_opencv_image()
+            cv2.imshow(msg.format(cam.get_name()), frame_image)
+            directory = os.path.join(os.path.dirname(__file__), "object_dropping_images/")
+            os.chdir(directory)
+            filename = f"img_{frame.get_id()}.jpg"
+            cv2.imwrite(filename, frame_image)
 
         cam.queue_frame(frame)
 
@@ -53,7 +60,9 @@ def main():
                 [print(str(time)) for time in frame_times_in_seconds]
                 total_time_in_seconds = sum(frame_times_in_seconds)
                 print(f"Total time (s): {total_time_in_seconds}")
-                average_time_in_seconds = total_time_in_seconds / len(frame_times_in_seconds)
+                num_frames_collected = len(frame_times_in_seconds)
+                print(f"Number of frames collected: {num_frames_collected}")
+                average_time_in_seconds = total_time_in_seconds / num_frames_collected
                 print(f"Average time (s): {average_time_in_seconds}")
 
                 print(f"Frequency (1 / AverageTime): {1/average_time_in_seconds}")
