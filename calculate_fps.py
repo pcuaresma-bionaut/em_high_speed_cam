@@ -2,6 +2,7 @@ from vimba import *
 import threading
 import cv2
 import os
+import shutil
 from datetime import datetime
 
 class Handler:
@@ -9,6 +10,8 @@ class Handler:
         self.shutdown_event = threading.Event()
         self.frame_time = 0
         self.frame_times = []
+        self.directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
+        delete_all_files_in(self.directory)
 
     def __call__(self, cam: Camera, frame: Frame):
         global start_frame_time
@@ -33,12 +36,25 @@ class Handler:
 
             frame_image = frame.as_opencv_image()
             cv2.imshow(msg.format(cam.get_name()), frame_image)
-            directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
-            os.chdir(directory)
+
+
+
+            os.chdir(self.directory)
             filename = f"img_{frame.get_id()}.jpg"
             cv2.imwrite(filename, frame_image)
 
         cam.queue_frame(frame)
+
+def delete_all_files_in(folder):
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def frame_handler(cam, frame):
     print('{} acquired {}'.format(cam, frame), flush=True)
