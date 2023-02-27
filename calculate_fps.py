@@ -33,7 +33,7 @@ class Handler:
 
             frame_image = frame.as_opencv_image()
             cv2.imshow(msg.format(cam.get_name()), frame_image)
-            directory = os.path.join(os.path.dirname(__file__), "object_dropping_images/")
+            directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
             os.chdir(directory)
             filename = f"img_{frame.get_id()}.jpg"
             cv2.imwrite(filename, frame_image)
@@ -56,19 +56,22 @@ def main():
                 cam.start_streaming(handler=handler, buffer_count=10)
                 handler.shutdown_event.wait()
 
-                frame_times_in_seconds = [time.total_seconds() for time in handler.frame_times]
-                [print(str(time)) for time in frame_times_in_seconds]
-                total_time_in_seconds = sum(frame_times_in_seconds)
-                print(f"Total time (s): {total_time_in_seconds}")
-                num_frames_collected = len(frame_times_in_seconds)
-                print(f"Number of frames collected: {num_frames_collected}")
-                average_time_in_seconds = total_time_in_seconds / num_frames_collected
-                print(f"Average time (s): {average_time_in_seconds}")
-
-                print(f"Frequency (1 / AverageTime): {1/average_time_in_seconds}")
+                print_frame_time_stuff(handler)
             finally:
                 cam.stop_streaming()
             
+
+def print_frame_time_stuff(handler):
+    frame_times_in_seconds = [time.total_seconds() for time in handler.frame_times]
+    [print(str(time)) for time in frame_times_in_seconds]
+    total_time_in_seconds = sum(frame_times_in_seconds)
+    print(f"Total time (s): {total_time_in_seconds}")
+    num_frames_collected = len(frame_times_in_seconds)
+    print(f"Number of frames collected: {num_frames_collected}")
+    average_time_in_seconds = total_time_in_seconds / num_frames_collected
+    print(f"Average time (s): {average_time_in_seconds}")
+
+    print(f"Frequency (1 / AverageTime): {1/average_time_in_seconds}")
             
 
 def print_camera_features(cam):
