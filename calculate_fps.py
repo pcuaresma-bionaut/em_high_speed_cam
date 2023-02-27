@@ -7,15 +7,10 @@ import time
 from datetime import datetime
 import numpy as np
 
-# Three ways I measure time to calculate frame rate:
-#   using frame timestamps
-#   using time.monotonic
-#   using datetime.now()
-
 class Handler:
     """A callback function that is called for every frame received from the camera."""
     def __init__(self):
-        # Video/Streaming Fields
+        # Video/Streaming/Saving Fields
         self.shutdown_event = threading.Event()
         self.directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
         delete_all_files_in(self.directory)
@@ -27,7 +22,6 @@ class Handler:
         self.elapsed_times = []
 
         self.timestamps = []
-
 
     def __call__(self, cam: Camera, frame: Frame):
         global start_frame_time
@@ -73,7 +67,7 @@ def setup_camera_settings(camera):
     camera.AcquisitionMode = 'Continuous'
 
     # Set the frame rate to 500 fps
-    camera.AcquisitionFrameRateAbs = 500
+    camera.AcquisitionFrameRateAbs = 1000
 
     # Set the pixel format to monochrome 8-bit
     camera.PixelFormat = 'Mono8'
@@ -110,47 +104,37 @@ def main():
                 cam.start_streaming(handler=handler, buffer_count=10)
                 handler.shutdown_event.wait()
 
-                print_frame_time_stuff(handler)
-                print_frame_time_stuff_2(handler)
             finally:
                 cam.stop_streaming()
                 end = datetime.now()
     
     print(f"Total time streaming: {(end-start).total_seconds()}")
 
-    print()
-    # [print(f"Timestamp in nanoseconds: {timestamp}") for timestamp in handler.timestamps]
+    print_frame_rate_calculated_using_datetime(handler)
+    print_frame_rate_calculated_using_monotonic_time(handler)
+    print_frame_rate_calculated_using_vimba_timestamps(handler)
+        
+def calculate_frame_rate(time_diffs):
+    """
+    Input: Array of time differences between frames captured
+    Output: The frame rate in frames per second
+    """
+    return 1/np.mean(time_diffs)
 
-    print()
-    # [print(f"Timestamp in seconds: {timestamp/1e9}") for timestamp in handler.timestamps]
+def print_frame_rate_calculated_using_datetime(handler):
+    frame_times_in_s = [time.total_seconds() for time in handler.frame_times]
+    print(f"Average frame rate (fps) using datetimes: {calculate_frame_rate(frame_times_in_s)}")
 
+def print_frame_rate_calculated_using_monotonic_time(handler):
+    print(f"Average frame rate (fps) using monotonic times: {calculate_frame_rate(handler.elapsed_times)}")     
+
+def print_frame_rate_calculated_using_vimba_timestamps(handler):
     diffs= []
     for i in range(len(handler.timestamps)-1):
         diffs.append(handler.timestamps[i+1]/1e9 - handler.timestamps[i]/1e9)
 
     diffs_inv = [1/elem for elem in diffs]
-    print(f"Average freq: {np.mean(diffs_inv)}")
-    # print((len(diffs)*time )/sum(diffs))
-        
-
-def print_frame_time_stuff(handler):
-    frame_times_in_s = [time.total_seconds() for time in handler.frame_times]
-    total_time_in_seconds = sum(frame_times_in_s)
-    num_frames_collected = len(frame_times_in_s)
-    average_time_in_seconds = total_time_in_seconds / num_frames_collected
-    
-    [print(str(time)) for time in frame_times_in_s]
-    print(f"Total time (s): {total_time_in_seconds}")
-    print(f"Number of frames collected: {num_frames_collected}")
-    print(f"Average time (s): {average_time_in_seconds}")
-
-    print(f"Frequency (1 / AverageTime): {1/average_time_in_seconds}")
-
-def print_frame_time_stuff_2(handler):
-    freq = len(handler.elapsed_times) / sum(handler.elapsed_times)
-
-    [print(time) for time in handler.elapsed_times]
-    print(f"FPS: {freq}")         
+    print(f"Average frame rate (fps) using the frames' timestamps: {np.mean(diffs_inv)}")
 
 def print_camera_features(cam):
     features = cam.get_all_features()
@@ -159,3 +143,4 @@ def print_camera_features(cam):
 
 if __name__ == '__main__':
     main()
+
