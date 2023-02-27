@@ -71,7 +71,7 @@ def main():
             
             
 
-def print_all_features(cam):
+def print_camera_features(cam):
     features = cam.get_all_features()
     for feature in features:
         print(feature)
