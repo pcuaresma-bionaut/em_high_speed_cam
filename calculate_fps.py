@@ -133,8 +133,7 @@ def print_frame_rate_calculated_using_vimba_timestamps(handler):
     for i in range(len(handler.timestamps)-1):
         diffs.append(handler.timestamps[i+1]/1e9 - handler.timestamps[i]/1e9)
 
-    diffs_inv = [1/elem for elem in diffs]
-    print(f"Average frame rate (fps) using the frames' timestamps: {np.mean(diffs_inv)}")
+    print(f"Average frame rate (fps) using the frames' timestamps: {calculate_frame_rate(diffs)}")
 
 def print_camera_features(cam):
     features = cam.get_all_features()
