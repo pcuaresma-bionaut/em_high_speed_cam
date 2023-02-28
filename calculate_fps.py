@@ -8,7 +8,6 @@ from datetime import datetime
 import numpy as np
 
 class FrameHandler:
-    """A callback function that is called for every frame received from the camera."""
     def __init__(self):
         # Video/Streaming/Saving Fields
         self.shutdown_event = threading.Event()
@@ -21,6 +20,8 @@ class FrameHandler:
         self.timestamps = []
 
     def __call__(self, cam: Camera, frame: Frame):
+        """A callback function that is called for every frame received from the camera."""
+        
         global last_time
         current_time = time.monotonic()
 
