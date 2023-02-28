@@ -1,5 +1,4 @@
 from vimba import *
-import threading
 import cv2
 import os
 import shutil
@@ -51,20 +50,30 @@ class Handler:
         cam.queue_frame(frame)
 
 def setup_camera_settings(camera):
+    # Set the pixel format to monochrome 8-bit
+    camera.PixelFormat = 'Mono8'
+
+    # Get the maximum width and height of the camera
+    max_width = camera.get_feature_by_name('WidthMax').get()
+    max_height = camera.get_feature_by_name('HeightMax').get()
+    
+    # Set the ROI width and height to a smaller value
+    roi_width = 640
+    roi_height = 480
+    camera.get_feature_by_name('Width').set(roi_width)
+    camera.get_feature_by_name('Height').set(roi_height)
+
     # Set the acquisition mode to continuous
     camera.AcquisitionMode = 'Continuous'
+
+    # Set the exposure time to 1 ms
+    camera.ExposureTimeAbs = 100
 
     # Set the frame rate to 500 fps
     camera.AcquisitionFrameRateAbs = 500
 
-    # Set the pixel format to monochrome 8-bit
-    camera.PixelFormat = 'Mono8'
-
-    # Set the exposure time to 1 ms
-    camera.ExposureTimeAbs = 1000
-
-    # Lower resolution
-    [print(feat) for feat in camera.get_all_features()]
+    # # Lower resolution
+    # [print(feat) for feat in camera.get_all_features()]
 
 
 def delete_all_files_in(folder):
