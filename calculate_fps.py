@@ -1,12 +1,13 @@
 from vimba import *
 import cv2
 import os
+import threading
 import shutil
 import time
 from datetime import datetime
 import numpy as np
 
-class Handler:
+class FrameHandler:
     """A callback function that is called for every frame received from the camera."""
     def __init__(self):
         # Video/Streaming/Saving Fields
@@ -99,7 +100,7 @@ def main():
         with cams[0] as cam:
             setup_camera_settings(cam)
 
-            handler = Handler()
+            handler = FrameHandler()
             try:
                 start = datetime.now()
                 cam.start_streaming(handler=handler, buffer_count=10)
