@@ -59,34 +59,6 @@ class FrameHandler:
         cam.queue_frame(frame)
 
 def setup_camera_settings(camera):
-    # # Enable write access for AcquisitionFrameRate
-    # camera.AcquisitionFrameRateEnable = True
-    
-    # # Set the pixel format to monochrome 8-bit
-    # camera.PixelFormat = 'Mono8'
-
-    # # Get the maximum width and height of the camera
-    # max_width = camera.get_feature_by_name('WidthMax').get()
-    # max_height = camera.get_feature_by_name('HeightMax').get()
-    
-    # # Set the ROI width and height to a smaller value
-    # roi_width = 640
-    # roi_height = 480
-    # camera.get_feature_by_name('Width').set(roi_width)
-    # camera.get_feature_by_name('Height').set(roi_height)
-
-    # # Set the acquisition mode to continuous
-    # camera.AcquisitionMode = 'Continuous'
-
-    # # Set the frame rate to 500 fps
-    # camera.AcquisitionFrameRateAbs = 500
-    # camera.AcquisitionFrameRate = 500
-
-    # # Set the exposure time to 1 ms
-    # camera.ExposureMode = 'Timed'
-    # camera.ExposureAuto = 'Off'
-    # camera.ExposureTimeAbs = 1000
-    # camera.ExposureTime = 1000
     camera.load_settings("settings_550fps.xml", PersistType.All)
 
 
