@@ -1,7 +1,7 @@
 import numpy as np
 
-distance_in_mm = 1000
-num_frames = 170 - 132
+distance_in_mm = 140
+num_frames = 3050 - 2955
 
 time_in_ms = np.sqrt(distance_in_mm / (0.0049))
 

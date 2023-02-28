@@ -9,73 +9,85 @@ import numpy as np
 
 class FrameHandler:
     def __init__(self):
-        # Video/Streaming/Saving Fields
+        # Video/Streaming Fields
         self.shutdown_event = threading.Event()
+
+        # Saving Fields
         self.directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
         delete_all_files_in(self.directory)
 
         # Timing/Frame Rate Fields
-        self.elapsed_times = []
+        # self.elapsed_times = []
 
         self.timestamps = []
 
+    def handle_frame(self, cam, frame):
+        # elapsed_time = current_time - last_time
+        # self.elapsed_times.append(elapsed_time)
+        # last_time = current_time
+
+        self.timestamps.append(frame.get_timestamp())
+
+        print(f"{cam} acquired {frame}", flush=True)
+
+        msg = 'Stream from \'{}\'. Press <Enter> to stop stream.'
+
+        frame_image = frame.as_opencv_image()
+        cv2.imshow(msg.format(cam.get_name()), frame_image)
+
+        os.chdir(self.directory)
+        filename = f"img_{frame.get_id()}.jpg"
+        cv2.imwrite(filename, frame_image)
+
     def __call__(self, cam: Camera, frame: Frame):
         """A callback function that is called for every frame received from the camera."""
-        
         global last_time
         current_time = time.monotonic()
 
         NO_KEY_PRESS_CODE = -1
         key = cv2.waitKey(1)
 
-        if key != NO_KEY_PRESS_CODE:
+        stop_condition = (key != NO_KEY_PRESS_CODE)
+        frame_done = (frame.get_status() == FrameStatus.Complete)
+
+        if stop_condition:
             self.shutdown_event.set()
             return
         elif frame.get_status() == FrameStatus.Complete:
-            # elapsed_time = current_time - last_time
-            # self.elapsed_times.append(elapsed_time)
-            # last_time = current_time
-
-            self.timestamps.append(frame.get_timestamp())
-
-            print(f"{cam} acquired {frame}", flush=True)
-
-            msg = 'Stream from \'{}\'. Press <Enter> to stop stream.'
-
-            frame_image = frame.as_opencv_image()
-            cv2.imshow(msg.format(cam.get_name()), frame_image)
-
-            os.chdir(self.directory)
-            filename = f"img_{frame.get_id()}.jpg"
-            cv2.imwrite(filename, frame_image)
+            self.handle_frame(cam, frame)
 
         cam.queue_frame(frame)
 
 def setup_camera_settings(camera):
-    # Set the pixel format to monochrome 8-bit
-    camera.PixelFormat = 'Mono8'
-
-    # Get the maximum width and height of the camera
-    max_width = camera.get_feature_by_name('WidthMax').get()
-    max_height = camera.get_feature_by_name('HeightMax').get()
+    # # Enable write access for AcquisitionFrameRate
+    # camera.AcquisitionFrameRateEnable = True
     
-    # Set the ROI width and height to a smaller value
-    roi_width = 640
-    roi_height = 480
-    camera.get_feature_by_name('Width').set(roi_width)
-    camera.get_feature_by_name('Height').set(roi_height)
+    # # Set the pixel format to monochrome 8-bit
+    # camera.PixelFormat = 'Mono8'
 
-    # Set the acquisition mode to continuous
-    camera.AcquisitionMode = 'Continuous'
+    # # Get the maximum width and height of the camera
+    # max_width = camera.get_feature_by_name('WidthMax').get()
+    # max_height = camera.get_feature_by_name('HeightMax').get()
+    
+    # # Set the ROI width and height to a smaller value
+    # roi_width = 640
+    # roi_height = 480
+    # camera.get_feature_by_name('Width').set(roi_width)
+    # camera.get_feature_by_name('Height').set(roi_height)
 
-    # Set the exposure time to 1 ms
-    camera.ExposureTimeAbs = 100
+    # # Set the acquisition mode to continuous
+    # camera.AcquisitionMode = 'Continuous'
 
-    # Set the frame rate to 500 fps
-    camera.AcquisitionFrameRateAbs = 500
+    # # Set the frame rate to 500 fps
+    # camera.AcquisitionFrameRateAbs = 500
+    # camera.AcquisitionFrameRate = 500
 
-    # # Lower resolution
-    # [print(feat) for feat in camera.get_all_features()]
+    # # Set the exposure time to 1 ms
+    # camera.ExposureMode = 'Timed'
+    # camera.ExposureAuto = 'Off'
+    # camera.ExposureTimeAbs = 1000
+    # camera.ExposureTime = 1000
+    camera.load_settings("settings_550fps.xml", PersistType.All)
 
 
 def delete_all_files_in(folder):
