@@ -16,18 +16,11 @@ class Handler:
         delete_all_files_in(self.directory)
 
         # Timing/Frame Rate Fields
-        self.frame_time = 0
-        self.frame_times = []
-
         self.elapsed_times = []
 
         self.timestamps = []
 
     def __call__(self, cam: Camera, frame: Frame):
-        global start_frame_time
-        global end_frame_time
-        start_frame_time = datetime.now()
-
         global last_time
         current_time = time.monotonic()
 
@@ -38,16 +31,11 @@ class Handler:
             self.shutdown_event.set()
             return
         elif frame.get_status() == FrameStatus.Complete:
-            end_frame_time = datetime.now()
-            self.frame_time = end_frame_time - start_frame_time
-            self.frame_times.append(self.frame_time)
-
-            elapsed_time = current_time - last_time
-            self.elapsed_times.append(elapsed_time)
-            last_time = current_time
+            # elapsed_time = current_time - last_time
+            # self.elapsed_times.append(elapsed_time)
+            # last_time = current_time
 
             self.timestamps.append(frame.get_timestamp())
-
 
             print(f"{cam} acquired {frame}", flush=True)
 
@@ -67,13 +55,17 @@ def setup_camera_settings(camera):
     camera.AcquisitionMode = 'Continuous'
 
     # Set the frame rate to 500 fps
-    camera.AcquisitionFrameRateAbs = 1000
+    camera.AcquisitionFrameRateAbs = 500
 
     # Set the pixel format to monochrome 8-bit
     camera.PixelFormat = 'Mono8'
 
     # Set the exposure time to 1 ms
     camera.ExposureTimeAbs = 1000
+
+    # Lower resolution
+    [print(feat) for feat in camera.get_all_features()]
+
 
 def delete_all_files_in(folder):
     for filename in os.listdir(folder):
@@ -110,8 +102,7 @@ def main():
     
     print(f"Total time streaming: {(end-start).total_seconds()}")
 
-    print_frame_rate_calculated_using_datetime(handler)
-    print_frame_rate_calculated_using_monotonic_time(handler)
+    # print_frame_rate_calculated_using_monotonic_time(handler)
     print_frame_rate_calculated_using_vimba_timestamps(handler)
         
 def calculate_frame_rate(time_diffs):
@@ -120,10 +111,6 @@ def calculate_frame_rate(time_diffs):
     Output: The frame rate in frames per second
     """
     return 1/np.mean(time_diffs)
-
-def print_frame_rate_calculated_using_datetime(handler):
-    frame_times_in_s = [time.total_seconds() for time in handler.frame_times]
-    print(f"Average frame rate (fps) using datetimes: {calculate_frame_rate(frame_times_in_s)}")
 
 def print_frame_rate_calculated_using_monotonic_time(handler):
     print(f"Average frame rate (fps) using monotonic times: {calculate_frame_rate(handler.elapsed_times)}")     
