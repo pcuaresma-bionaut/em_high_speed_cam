@@ -17,7 +17,7 @@ TODO:
 OUTPUT_STR = "output"
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), OUTPUT_STR + "/")
 VIDEO_NAME = OUTPUT_STR + "_video.avi"
-FILE_NAME = "{file}.jpg" 
+FILE_NAME = OUTPUT_STR + "_image_{}.jpg" 
 FPS = 475
 
 class FrameHandler:
@@ -47,8 +47,7 @@ class FrameHandler:
         cv2.imshow(msg.format(cam.get_name()), frame_image)
 
         os.chdir(OUTPUT_DIR)
-        filename = f"img_{frame.get_id()}.jpg"
-        cv2.imwrite(filename, frame_image)
+        cv2.imwrite(FILE_NAME.format(frame.get_id()), frame_image)
 
     def __call__(self, cam: Camera, frame: Frame):
         """A callback function that is called for every frame received from the camera."""
@@ -105,7 +104,7 @@ def main():
                 cam.stop_streaming()
                 end = datetime.now()
     
-    print(f"Total time streaming: {(end-start).total_seconds()}")
+    print(f"Total time streaming: {(end-start).total_seconds()} seconds")
 
     print_frame_rate_calculated_using_vimba_timestamps(handler)
 
