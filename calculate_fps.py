@@ -58,7 +58,7 @@ class FrameHandler:
 
         cam.queue_frame(frame)
 
-def setup_camera_settings(camera):
+def setup_camera(camera):
     camera.load_settings("settings_550fps.xml", PersistType.All)
 
 
@@ -83,7 +83,7 @@ def main():
     with Vimba.get_instance() as vimba:
         cams = vimba.get_all_cameras()
         with cams[0] as cam:
-            setup_camera_settings(cam)
+            setup_camera(cam)
 
             handler = FrameHandler()
             try:
