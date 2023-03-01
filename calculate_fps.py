@@ -114,7 +114,6 @@ def main():
 def write_frames_to_video():
     images = [img for img in os.listdir(OUTPUT_DIR) if img.endswith(".jpg")]
     images.sort()
-    [print(image) for image in images]
     frame = cv2.imread(os.path.join(OUTPUT_DIR, images[0]))
     height, width, layers = frame.shape
 
