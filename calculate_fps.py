@@ -52,10 +52,10 @@ class FrameHandler:
         global last_time
         current_time = time.monotonic()
 
-        NO_KEY_PRESS_CODE = -1
+        NO_KEY_PRESSED_CODE = -1
         key = cv2.waitKey(1)
 
-        stop_condition = (key != NO_KEY_PRESS_CODE)
+        stop_condition = (key != NO_KEY_PRESSED_CODE)
         frame_done = (frame.get_status() == FrameStatus.Complete)
 
         if stop_condition:
