@@ -27,15 +27,9 @@ class FrameHandler:
         delete_all_files_in(self.directory)
 
         # Timing/Frame Rate Fields
-        # self.elapsed_times = []
-
         self.timestamps = []
 
     def handle_frame(self, cam, frame):
-        # elapsed_time = current_time - last_time
-        # self.elapsed_times.append(elapsed_time)
-        # last_time = current_time
-
         self.timestamps.append(frame.get_timestamp())
 
         print(f"{cam} acquired {frame}", flush=True)
