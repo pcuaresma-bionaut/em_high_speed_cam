@@ -112,8 +112,6 @@ def main():
     write_frames_to_video()
 
 def write_frames_to_video():
-    video_name = 'gravity_test_video.avi'
-
     images = [img for img in os.listdir(OUTPUT_DIR) if img.endswith(".jpg")]
     images.sort()
     frame = cv2.imread(os.path.join(OUTPUT_DIR, images[0]))
