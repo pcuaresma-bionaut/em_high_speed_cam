@@ -126,9 +126,6 @@ def calculate_frame_rate(time_diffs):
     """
     return 1/np.mean(time_diffs)
 
-def print_frame_rate_calculated_using_monotonic_time(handler):
-    print(f"Average frame rate (fps) using monotonic times: {calculate_frame_rate(handler.elapsed_times)}")     
-
 def print_frame_rate_calculated_using_vimba_timestamps(handler):
     diffs= []
     for i in range(len(handler.timestamps)-1):
