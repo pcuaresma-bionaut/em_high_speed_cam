@@ -14,7 +14,9 @@ TODO:
 - adjustable/viewable frame rate
 """
 
-FPS = 550
+OUTPUT_FOLDER_NAME = "gravity_test_images"
+OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), OUTPUT_FOLDER_NAME + "/")
+FPS = 475
 
 class FrameHandler:
     def __init__(self):
@@ -109,9 +111,9 @@ def write_frames_to_video():
     video_name = 'gravity_test_video.avi'
 
     directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
-    # os.chdir(directory)
 
     images = [img for img in os.listdir(directory) if img.endswith(".jpg")]
+    images.sort()
     frame = cv2.imread(os.path.join(directory, images[0]))
     height, width, layers = frame.shape
 
