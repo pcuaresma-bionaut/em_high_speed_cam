@@ -17,21 +17,22 @@ TODO:
 OUTPUT_STR = "output"
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), OUTPUT_STR + "/")
 VIDEO_NAME = OUTPUT_STR + "_video.avi"
-FILE_NAME = OUTPUT_STR + "_image_{}.jpg" 
+FILE_NAME = OUTPUT_STR + "_image_{:0>6}.jpg" 
 FPS = 475
+
+def prepare_output_folder():
+    try:
+        os.makedirs(OUTPUT_DIR)
+    except FileExistsError:
+        delete_all_files_in(OUTPUT_DIR)
+        pass
 
 class FrameHandler:
     def __init__(self):
         # Video/Streaming Fields
         self.shutdown_event = threading.Event()
 
-        try:
-            os.makedirs(OUTPUT_DIR)
-        except FileExistsError:
-            # Directory already exists
-            pass
-
-        delete_all_files_in(OUTPUT_DIR)
+        prepare_output_folder()
 
         # Timing/Frame Rate Fields
         self.timestamps = []
@@ -113,6 +114,7 @@ def main():
 def write_frames_to_video():
     images = [img for img in os.listdir(OUTPUT_DIR) if img.endswith(".jpg")]
     images.sort()
+    [print(image) for image in images]
     frame = cv2.imread(os.path.join(OUTPUT_DIR, images[0]))
     height, width, layers = frame.shape
 
