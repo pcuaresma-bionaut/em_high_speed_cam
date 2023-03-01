@@ -15,6 +15,8 @@ TODO:
 - 
 """
 
+FPS = 550
+
 class FrameHandler:
     def __init__(self):
         # Video/Streaming Fields
@@ -106,6 +108,27 @@ def main():
 
     # print_frame_rate_calculated_using_monotonic_time(handler)
     print_frame_rate_calculated_using_vimba_timestamps(handler)
+
+    write_frames_to_video()
+
+def write_frames_to_video():
+    image_folder = 'gravity_test_images'
+    video_name = 'gravity_test_video.avi'
+
+    directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
+    # os.chdir(directory)
+
+    images = [img for img in os.listdir(directory) if img.endswith(".jpg")]
+    frame = cv2.imread(os.path.join(directory, images[0]))
+    height, width, layers = frame.shape
+
+    video = cv2.VideoWriter(video_name, 0, FPS, (width,height))
+
+    for image in images:
+        video.write(cv2.imread(os.path.join(directory, image)))
+
+    cv2.destroyAllWindows()
+    video.release()
         
 def calculate_frame_rate(time_diffs):
     """
