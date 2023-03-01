@@ -7,6 +7,14 @@ import time
 from datetime import datetime
 import numpy as np
 
+"""
+TODO:
+- output folder name and date
+    - default current date
+- adjustable/viewable frame rate
+- 
+"""
+
 class FrameHandler:
     def __init__(self):
         # Video/Streaming Fields
@@ -53,14 +61,13 @@ class FrameHandler:
         if stop_condition:
             self.shutdown_event.set()
             return
-        elif frame.get_status() == FrameStatus.Complete:
+        elif frame_done:
             self.handle_frame(cam, frame)
 
         cam.queue_frame(frame)
 
 def setup_camera(camera):
     camera.load_settings("settings_550fps.xml", PersistType.All)
-
 
 def delete_all_files_in(folder):
     for filename in os.listdir(folder):
