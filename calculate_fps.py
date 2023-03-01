@@ -12,7 +12,6 @@ TODO:
 - output folder name and date
     - default current date
 - adjustable/viewable frame rate
-- 
 """
 
 FPS = 550
