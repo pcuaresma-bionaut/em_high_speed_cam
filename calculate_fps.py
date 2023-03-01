@@ -23,9 +23,7 @@ class FrameHandler:
         # Video/Streaming Fields
         self.shutdown_event = threading.Event()
 
-        # Saving Fields
-        self.directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
-        delete_all_files_in(self.directory)
+        delete_all_files_in(OUTPUT_FOLDER)
 
         # Timing/Frame Rate Fields
         self.timestamps = []
@@ -40,7 +38,7 @@ class FrameHandler:
         frame_image = frame.as_opencv_image()
         cv2.imshow(msg.format(cam.get_name()), frame_image)
 
-        os.chdir(self.directory)
+        os.chdir(OUTPUT_FOLDER)
         filename = f"img_{frame.get_id()}.jpg"
         cv2.imwrite(filename, frame_image)
 
@@ -101,26 +99,22 @@ def main():
     
     print(f"Total time streaming: {(end-start).total_seconds()}")
 
-    # print_frame_rate_calculated_using_monotonic_time(handler)
     print_frame_rate_calculated_using_vimba_timestamps(handler)
 
     write_frames_to_video()
 
 def write_frames_to_video():
-    image_folder = 'gravity_test_images'
     video_name = 'gravity_test_video.avi'
 
-    directory = os.path.join(os.path.dirname(__file__), "gravity_test_images/")
-
-    images = [img for img in os.listdir(directory) if img.endswith(".jpg")]
+    images = [img for img in os.listdir(OUTPUT_FOLDER) if img.endswith(".jpg")]
     images.sort()
-    frame = cv2.imread(os.path.join(directory, images[0]))
+    frame = cv2.imread(os.path.join(OUTPUT_FOLDER, images[0]))
     height, width, layers = frame.shape
 
     video = cv2.VideoWriter(video_name, 0, FPS, (width,height))
 
     for image in images:
-        video.write(cv2.imread(os.path.join(directory, image)))
+        video.write(cv2.imread(os.path.join(OUTPUT_FOLDER, image)))
 
     cv2.destroyAllWindows()
     video.release()
