@@ -14,8 +14,10 @@ TODO:
 - adjustable/viewable frame rate
 """
 
-OUTPUT_FOLDER_NAME = "gravity_test_images"
-OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), OUTPUT_FOLDER_NAME + "/")
+OUTPUT_STR = "output"
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), OUTPUT_STR + "/")
+VIDEO_NAME = OUTPUT_STR + "_video.avi"
+FILE_NAME = "{file}.jpg" 
 FPS = 475
 
 class FrameHandler:
@@ -23,7 +25,13 @@ class FrameHandler:
         # Video/Streaming Fields
         self.shutdown_event = threading.Event()
 
-        delete_all_files_in(OUTPUT_FOLDER)
+        try:
+            os.makedirs(OUTPUT_DIR)
+        except FileExistsError:
+            # Directory already exists
+            pass
+
+        delete_all_files_in(OUTPUT_DIR)
 
         # Timing/Frame Rate Fields
         self.timestamps = []
@@ -38,7 +46,7 @@ class FrameHandler:
         frame_image = frame.as_opencv_image()
         cv2.imshow(msg.format(cam.get_name()), frame_image)
 
-        os.chdir(OUTPUT_FOLDER)
+        os.chdir(OUTPUT_DIR)
         filename = f"img_{frame.get_id()}.jpg"
         cv2.imwrite(filename, frame_image)
 
@@ -106,15 +114,15 @@ def main():
 def write_frames_to_video():
     video_name = 'gravity_test_video.avi'
 
-    images = [img for img in os.listdir(OUTPUT_FOLDER) if img.endswith(".jpg")]
+    images = [img for img in os.listdir(OUTPUT_DIR) if img.endswith(".jpg")]
     images.sort()
-    frame = cv2.imread(os.path.join(OUTPUT_FOLDER, images[0]))
+    frame = cv2.imread(os.path.join(OUTPUT_DIR, images[0]))
     height, width, layers = frame.shape
 
-    video = cv2.VideoWriter(video_name, 0, FPS, (width,height))
+    video = cv2.VideoWriter(VIDEO_NAME, 0, FPS, (width,height))
 
     for image in images:
-        video.write(cv2.imread(os.path.join(OUTPUT_FOLDER, image)))
+        video.write(cv2.imread(os.path.join(OUTPUT_DIR, image)))
 
     cv2.destroyAllWindows()
     video.release()
