@@ -12,9 +12,13 @@ TODO:
 - output folder name and date
     - default current date
 - adjustable/viewable frame rate
+- automatically exclude unnecessary frames at beginning and end when making video
+- save output to one file but with adjustable names
+    - AND ASK TO OVERRIDE IF SAME NAME IS CHOSEN
+- add notes after video is taken
 """
 
-OUTPUT_STR = "output"
+OUTPUT_STR = "output_lipstick_harpoon_2cm"
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), OUTPUT_STR + "/")
 VIDEO_NAME = OUTPUT_STR + "_video.avi"
 FILE_NAME = OUTPUT_STR + "_image_{:0>6}.jpg" 
@@ -83,37 +87,11 @@ def delete_all_files_in(folder):
         except Exception as e:
             print('Failed to delete %s. Reason: %s' % (file_path, e))
 
-def main():
-    global start_frame_time
-    global end_frame_time
-
-    global last_time
-    
-    last_time = time.monotonic()
-    with Vimba.get_instance() as vimba:
-        cams = vimba.get_all_cameras()
-        with cams[0] as cam:
-            setup_camera(cam)
-
-            handler = FrameHandler()
-            try:
-                start = datetime.now()
-                cam.start_streaming(handler=handler, buffer_count=10)
-                handler.shutdown_event.wait()
-
-            finally:
-                cam.stop_streaming()
-                end = datetime.now()
-    
-    print(f"Total time streaming: {(end-start).total_seconds()} seconds")
-
-    print_frame_rate_calculated_using_vimba_timestamps(handler)
-
-    write_frames_to_video()
 
 def write_frames_to_video():
     images = [img for img in os.listdir(OUTPUT_DIR) if img.endswith(".jpg")]
     images.sort()
+    # images = [img for img in images if int(img[-8:-4]) > 4300]
     frame = cv2.imread(os.path.join(OUTPUT_DIR, images[0]))
     height, width, layers = frame.shape
 
@@ -143,6 +121,33 @@ def print_camera_features(cam):
     features = cam.get_all_features()
     for feature in features:
         print(feature)
+
+def main():
+    global start_frame_time
+    global end_frame_time
+
+    global last_time
+    
+    last_time = time.monotonic()
+    with Vimba.get_instance() as vimba:
+        cams = vimba.get_all_cameras()
+        with cams[0] as cam:
+            setup_camera(cam)
+
+            handler = FrameHandler()
+            try:
+                start = datetime.now()
+                cam.start_streaming(handler=handler, buffer_count=10)
+                handler.shutdown_event.wait()
+
+            finally:
+                cam.stop_streaming()
+                end = datetime.now()
+    
+    print(f"Total time streaming: {(end-start).total_seconds()} seconds")
+
+    print_frame_rate_calculated_using_vimba_timestamps(handler)
+    write_frames_to_video()
 
 if __name__ == '__main__':
     main()
