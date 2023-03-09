@@ -37,16 +37,16 @@ OUTPUT_STR = "test_output"
 
 def configure_save_settings():
     args = get_parsed_arguments()
-    OUTPUT_STR = args.filename
+    OUTPUT_STR = args.file_string
     DELETE_FRAMES = args.video_only
-    print(f"file name? {OUTPUT_STR}")
+    print(f"file string? {OUTPUT_STR}")
     print(f"delete frames? {DELETE_FRAMES}")
 
 def get_parsed_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("filename", default="test_output")
-    parser.add_argument("-v", "--video-only", action='store_true', default=False)
-    args = parser.parse_args(sys.argv)
+    parser.add_argument("file_string", default="test_output", help="string to be used in output directory name, output video file name, and output frame image file names. Purpose: to identify the camera run the output originates from.")
+    parser.add_argument("-v", "--video-only", action='store_true', default=False, help="if true, stores the video only (no frames); defaults to False")
+    args = parser.parse_args(sys.argv[1:])
     return args
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
