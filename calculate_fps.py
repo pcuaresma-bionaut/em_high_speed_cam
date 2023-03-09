@@ -7,6 +7,9 @@ import time
 from datetime import datetime
 import numpy as np
 import time
+import sys
+import argparse
+import getopt
 
 """
 TODO:
@@ -30,9 +33,24 @@ TODO:
         > name_video.avi
 """
 
-timestr = time.strftime("%Y%m%d-%H%M%S")
-
 OUTPUT_STR = "test_output"
+
+def configure_save_settings():
+    args = get_parsed_arguments()
+    OUTPUT_STR = args.filename
+    DELETE_FRAMES = args.video_only
+    print(f"file name? {OUTPUT_STR}")
+    print(f"delete frames? {DELETE_FRAMES}")
+
+def get_parsed_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("filename", default="test_output")
+    parser.add_argument("-v", "--video-only", action='store_true', default=False)
+    args = parser.parse_args(sys.argv)
+    return args
+
+timestr = time.strftime("%Y%m%d-%H%M%S")
+    
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), OUTPUT_STR + "/")
 VIDEO_NAME = OUTPUT_STR + "_video.avi"
 FILE_NAME = OUTPUT_STR + "_image_{:0>6}.jpg" 
@@ -113,7 +131,13 @@ def write_frames_to_video():
 
     cv2.destroyAllWindows()
     video.release()
-        
+    
+    if DELETE_FRAMES:
+        for f in os.listdir(OUTPUT_DIR):
+            if not f.endswith(".jpg"):
+                continue
+            os.remove(os.path.join(mydir, f))
+                
 def calculate_frame_rate(time_diffs):
     """
     Input: Array of time differences between frames captured
@@ -134,6 +158,8 @@ def print_camera_features(cam):
         print(feature)
 
 def main():
+    configure_save_settings()
+
     with Vimba.get_instance() as vimba:
         cams = vimba.get_all_cameras()
         with cams[0] as cam:
