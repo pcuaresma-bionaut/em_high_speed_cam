@@ -45,22 +45,27 @@ class IOStuff:
         
     def configure_save_settings(self):
         args = self.get_parsed_arguments()
-        return args.file_string, args.video_only
+        return args.output_file_string, args.video_only
 
     def get_parsed_arguments(self):
         parser = argparse.ArgumentParser()
-        parser.add_argument("file_string", default="test_output", help="string to be used in output directory name, output video file name, and output frame image file names. Purpose: to identify the camera run the output originates from.")
+        parser.add_argument("output_file_string", default="test_output", help="string to be used in output directory name, output video file name, and output frame image file names. Purpose: to identify the camera run the output originates from. e.g., 'output1'")
         parser.add_argument("-v", "--video-only", action='store_true', default=False, help="if true, stores the video only (no frames); defaults to False")
         args = parser.parse_args(sys.argv[1:])
         return args
 
     def prepare_output_folder(self):
-        output_folder = os.path.join(os.path.dirname(__file__), self.output_str + "/")
         try:
+            output_folder = os.path.join(os.path.dirname(__file__), self.output_str + "/")
             os.makedirs(output_folder)
         except FileExistsError:
-            self.delete_all_files_in(output_folder)
-            pass
+            sys.stdout.write(f"This action will delete the folder \n\t{output_folder} \nand its contents. Press 'y' to continue or 'n' to cancel: ")
+            answer = input().lower()
+            if answer == 'y':
+                self.delete_all_files_in(output_folder)
+                pass
+            elif answer == 'n':
+                sys.exit()
         return output_folder
 
     def delete_all_files_in(self, folder):
